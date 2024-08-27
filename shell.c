@@ -13,7 +13,6 @@ void bienvenido(){
     printf("------------------------\n");
 
 }
-
 void parsearComando(const char *entrada, char *comando, char **argumentos, int *numArgs) {
     *numArgs = 0; // Inicializa el número de argumentos
 
@@ -40,22 +39,42 @@ void parsearComando(const char *entrada, char *comando, char **argumentos, int *
     argumentos[*numArgs] = NULL;
 }
 
+void procesoconcurrente(char *comando, char **argumentos){
+    int pc_id = fork();
+    
+    if(pc_id==0){
+        execvp(comando, argumentos);
+    }else if(pc_id>0){
+        wait(NULL);
 
+    }else if(pc_id<0){
+        printf("Error al crear el hijo");
+    }
+    
+}
 
 int main(){
-    char entrada[] = "";
+    char entrada[200];
     char comando[50];
     char *argumentos[10];
     int numArgs;
     bienvenido();
-    printf(">");
-    parsearComando(entrada, comando, argumentos, &numArgs);
-    execvp(comando, argumentos);
-    printf("Comando: %s\n", comando);
-    printf("Argumentos:\n");
-    for (int i = 0; i < numArgs; i++) {
-        printf("Argumento %d: %s\n", i + 1, argumentos[i]);
+    while (1){
+        printf(">");
+        fgets(entrada, sizeof(entrada), stdin);
+        entrada[strcspn(entrada, "\n")] = '\0';
+        if(strcmp(entrada, "exit") == 0) break;
+        parsearComando(entrada, comando, argumentos, &numArgs);
+        procesoconcurrente(comando, argumentos);
+        /*//execvp(comando, argumentos);
+        printf("Comando: %s\n", comando);
+        printf("Argumentos:\n");
+        for (int i = 0; i < numArgs; i++) {
+            printf("Argumento %d: %s ", i + 1, argumentos[i]);
+        }
+        printf("\n");*/
     }
+    
 
 
     return 0;
