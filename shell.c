@@ -5,16 +5,9 @@
 #include <sys/wait.h>
 #include <string.h>
 
-void bienvenido(){
-    printf("------------------------\n");
-    printf("------------------------\n");
-    printf("Shell en funcionamiento\n");
-    printf("------------------------\n");
-    printf("------------------------\n");
 
-}
-void parsearComando(const char *entrada, char *comando, char **argumentos, int *numArgs) {
-    *numArgs = 0; // Inicializa el número de argumentos
+void parsearComando(const char *entrada, char *comando, char **argumentos) {
+    int numArgs = 0; // Inicializa el número de argumentos
 
     // Hacemos una copia de la entrada porque strtok modifica la cadena
     char copiaEntrada[1024];
@@ -24,19 +17,19 @@ void parsearComando(const char *entrada, char *comando, char **argumentos, int *
     char *token = strtok(copiaEntrada, " ");
     if (token != NULL) {
         strcpy(comando, token); // Guarda el comando
-        argumentos[*numArgs] = comando; // El primer argumento es el comando en execvp
-        (*numArgs)++;
+        argumentos[numArgs] = comando; // El primer argumento es el comando en execvp
+        (numArgs)++;
     }
 
     // Extraemos los argumentos (resto de las palabras)
     while (token != NULL) {
         token = strtok(NULL, " ");
         if (token != NULL) {
-            argumentos[*numArgs] = token; // Almacena el argumento
-            (*numArgs)++;
+            argumentos[numArgs] = token; // Almacena el argumento
+            (numArgs)++;
         }
     }
-    argumentos[*numArgs] = NULL;
+    argumentos[numArgs] = NULL;
 }
 
 void procesoconcurrente(char *comando, char **argumentos){
@@ -57,14 +50,12 @@ int main(){
     char entrada[200];
     char comando[50];
     char *argumentos[10];
-    int numArgs;
-    bienvenido();
     while (1){
         printf(">");
         fgets(entrada, sizeof(entrada), stdin);
         entrada[strcspn(entrada, "\n")] = '\0';
         if(strcmp(entrada, "exit") == 0) break;
-        parsearComando(entrada, comando, argumentos, &numArgs);
+        parsearComando(entrada, comando, argumentos);
         procesoconcurrente(comando, argumentos);
         /*//execvp(comando, argumentos);
         printf("Comando: %s\n", comando);
