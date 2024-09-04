@@ -1,0 +1,7 @@
+1 sad
+2 f
+3 sa
+4 sd
+5 favs guardar
+6 ls | wc
+7 favs guardar
