@@ -9,8 +9,6 @@
 #define MAX_PIPES 100
 #define MAX_CHAR 200
 
-
-
 typedef struct node{
     int n;
     char *linea;
@@ -73,14 +71,17 @@ void guardar(node **head, FILE *archivo) {
         current = current->next;
     }
 }
-void cargar(node *head, FILE *archivo){
-    int n;
-    char *linea;
-    while (fscanf(archivo, "%d %255s", &n, linea) == 2) {
-        // Usa la función push para agregar el número y la cadena a la lista
-        push(&head, &n, linea);
+void cargar(node **head, FILE *archivo, int *n) {
+    int numero;
+    char linea[200];
+    while (fgets(linea, sizeof(linea), archivo)) {
+        if (sscanf(linea, "%d %[^\n]", &numero, linea) == 2) {
+            *n = numero - 1;
+            push(head, n, linea);
+        }
     }
 }
+
 void borrar(node **head, int *n) {
     node *current = *head;
     node *next_node;
@@ -202,14 +203,18 @@ void procesoconcurrente(char *comando, char **argumentos) {
     }
 }
 
-// Función principal
+
 int main() {
     node *head = NULL;
     int cant_n=0; 
     char entrada[MAX_CHAR];
     char *comandos[MAX_PIPES + 1];
     int numComandos;
-    char *ruta = "misfavoritos.txt";
+    char *guardado = malloc(MAX_CHAR * sizeof(char));
+    char *ruta = "ruta.txt";
+    FILE *r_archivo = fopen(ruta,"r");
+    fscanf(r_archivo, "%s",guardado);
+    fclose(r_archivo);
 
     while (1) {
         printf("> ");
@@ -300,25 +305,32 @@ int main() {
             if (argumentos[1] != NULL) {}
                 if (strcmp(argumentos[1], "crear") == 0) {
                     printf("Comando: favs crear\n");
-                    char *ruta = argumentos[2];
-                    FILE *archivo = fopen(ruta, "w"); 
+                    guardado = argumentos[2];
+                    FILE *r_archivo = fopen(ruta, "w");
+                    fprintf(r_archivo, "%s",guardado);
+                    fclose(r_archivo);
+                    FILE *archivo = fopen(guardado, "w"); 
                     if (archivo != NULL) { 
                         fprintf(archivo, "Este es el archivo de tus comandos favoritos.\n"); 
                         fclose(archivo); 
-                        printf("Archivo '%s' creado con éxito.\n", ruta); 
+                        printf("Archivo '%s' creado con éxito.\n", guardado); 
                     } else { 
                         perror("Error al crear el archivo"); 
                         } 
                 continue; // Saltar el resto de la iteración del loop 
                 } else if (strcmp(argumentos[1], "guardar") == 0) {
                     printf("Comando: favs guardar\n");
-                    FILE *archivo = fopen(ruta, "w");
+                    FILE *archivo = fopen(guardado, "w");
                     guardar(&head, archivo);
                     fclose(archivo);
                     continue;
                 } else if (strcmp(argumentos[1], "cargar") == 0) {
                     printf("Comando: favs cargar\n");
-                    // Aquí implementa la lógica para el comando favs crear
+                    borrar(&head, &cant_n);
+                    FILE *archivo = fopen(guardado, "r");
+                    cargar(&head, archivo, &cant_n);
+                    fclose(archivo);
+                    continue;
                 }else if (strcmp(argumentos[1], "mostrar") == 0) {
                     printf("Comando: favs mostrar\n");
                     printf("%d\n",cant_n);
