@@ -17,9 +17,31 @@ typedef struct node{
     struct node* next;
 } node;
 
-void push(node *head, int *n, char *linea) {
+int existeEnLista(node *head, char *linea) {
+    node *current = head;
+    while (current != NULL) {
+        if (strcmp(current->linea, linea) == 0) {
+            return 1; // Ya existe
+        }
+        current = current->next;
+    }
+    return 0; // No existe
+}
+
+void push(node **head, int *n, char *linea) {
+    if (existeEnLista(*head, linea)) {
+        printf("El comando '%s' ya está en la lista, no se guardará de nuevo.\n", linea);
+        return; // No se guarda si ya existe
+    }
     (*n)++;
-    node * current = head;
+    if (*head == NULL) {
+        *head = (node *)malloc(sizeof(node));
+        (*head)->n = *n;
+        (*head)->linea = strdup(linea);
+        (*head)->next = NULL;
+        return;
+    }
+    node * current = *head;
     while (current->next != NULL) {
         current = current->next;
     }
@@ -31,8 +53,8 @@ void push(node *head, int *n, char *linea) {
     
 }
 
-void print_list(node *head) {
-    node *current = head;
+void print_list(node **head) {
+    node *current = *head;
     printf("INICIO DE PRINTFS\n");
     while (current != NULL) {
         printf("#####\n");
@@ -42,8 +64,8 @@ void print_list(node *head) {
         current = current->next;
     }
 }
-void guardar(node *head, FILE *archivo) {
-    node *current = head;
+void guardar(node **head, FILE *archivo) {
+    node *current = *head;
     while (current != NULL) {
         
         fprintf(archivo,"%d " ,current->n);
@@ -51,6 +73,28 @@ void guardar(node *head, FILE *archivo) {
         current = current->next;
     }
 }
+void cargar(node *head, FILE *archivo){
+    int n;
+    char *linea;
+    while (fscanf(archivo, "%d %255s", &n, linea) == 2) {
+        // Usa la función push para agregar el número y la cadena a la lista
+        push(&head, &n, linea);
+    }
+}
+void borrar(node **head, int *n) {
+    node *current = *head;
+    node *next_node;
+
+    while (current != NULL) {
+        next_node = current->next;  // Guarda el siguiente nodo
+        free(current->linea);       // Libera la memoria de la cadena
+        free(current);              // Libera la memoria del nodo actual
+        current = next_node;        // Avanza al siguiente nodo
+    }
+    *n = 0;
+    *head = NULL;
+}
+
 
 
 
@@ -165,6 +209,7 @@ int main() {
     char entrada[MAX_CHAR];
     char *comandos[MAX_PIPES + 1];
     int numComandos;
+    char *ruta = "misfavoritos.txt";
 
     while (1) {
         printf("> ");
@@ -184,52 +229,154 @@ int main() {
         if (strcmp(entrada, "exit") == 0) {
             break;
         }
-        if (strncmp(entrada, "favs ", 5) == 0) { 
-            if(strncmp(entrada+5, "crear ", 6) == 0){
-                char *ruta = entrada + 11; // Obtener la ruta después del comando "favs " 
+        if (strncmp(entrada, "favs eliminar ", 14) == 0) {
+    char *buscar = entrada + 14; // Donde empiezan los números a eliminar
+    int pos = 0;
 
-                FILE *archivo = fopen(ruta, "w"); 
-                if (archivo != NULL) { 
-                    fprintf(archivo, "Este es el archivo de tus comandos favoritos.\n"); 
-                    fclose(archivo); 
-                    printf("Archivo '%s' creado con éxito.\n", ruta); 
-                } else { 
-                perror("Error al crear el archivo"); 
-                } 
-                continue; // Saltar el resto de la iteración del loop 
+    while (*buscar) {
+        pos = 0;
+        // Calcula el número del string
+        while (*buscar >= '0' && *buscar <= '9') {
+            pos = pos * 10 + (*buscar - '0');
+            buscar++;
+        }
+
+        // Eliminar el nodo en la posición 'pos'
+        if (pos == 1) {
+            // Si se quiere eliminar el primer nodo
+            node *temp = head;
+            if (temp != NULL) {
+                head = head->next;
+                free(temp->linea);
+                free(temp);
+                cant_n--;
             }
-            //if(strncmp(entrada+5, "otros comandos ", 6) == 0) {}   
+        } else {
+            // Eliminar un nodo en una posición intermedia
+            node *eliminar = head;
+            for (int i = 1; eliminar != NULL && i < pos - 1; i++) {
+                eliminar = eliminar->next;
+            }
+
+            if (eliminar != NULL && eliminar->next != NULL) {
+                node *nodo_a_eliminar = eliminar->next;
+                eliminar->next = nodo_a_eliminar->next;
+                free(nodo_a_eliminar->linea);
+                free(nodo_a_eliminar);
+                cant_n--;
+            }
         }
-        if(cant_n==0){
-            head = (node *) malloc(sizeof(node));
-            ++cant_n;
-            head->n = cant_n;
-            head->linea = strdup(entrada);
-            head->next= NULL;
-        }else push(head, &cant_n, entrada);
-        printf("%d\n",cant_n);
-        print_list(head);
-        
-        const char *ruta = "misfavoritos.txt";
-        
-        if(strcmp(entrada, "favs guardar")==0){
-            FILE *archivo = fopen(ruta, "w");
-            guardar(head, archivo);
-            fclose(archivo);
+
+        // Avanza sobre las comas
+        while (*buscar == ',') {
+            buscar++;
         }
+    }
+
+    // Actualiza los números de los nodos
+    node *temp = head;
+    int nuevo_n = 1;
+    while (temp != NULL) {
+        temp->n = nuevo_n++;
+        temp = temp->next;
+    }
+}
+
+
+        
         
         
         parsearComandoConPipes(entrada, comandos, &numComandos);
 
         if (numComandos > 1) {
             ejecutarConPipes(comandos, numComandos);
+            push(&head, &cant_n, entrada);
         } else {
             char comando[50];
             char *argumentos[MAX_ARGS];
             parsearComando(entrada, comando, argumentos);
+            
+            if (strcmp(comando, "favs") == 0) {
+            if (argumentos[1] != NULL) {}
+                if (strcmp(argumentos[1], "crear") == 0) {
+                    printf("Comando: favs crear\n");
+                    char *ruta = argumentos[2];
+                    FILE *archivo = fopen(ruta, "w"); 
+                    if (archivo != NULL) { 
+                        fprintf(archivo, "Este es el archivo de tus comandos favoritos.\n"); 
+                        fclose(archivo); 
+                        printf("Archivo '%s' creado con éxito.\n", ruta); 
+                    } else { 
+                        perror("Error al crear el archivo"); 
+                        } 
+                continue; // Saltar el resto de la iteración del loop 
+                } else if (strcmp(argumentos[1], "guardar") == 0) {
+                    printf("Comando: favs guardar\n");
+                    FILE *archivo = fopen(ruta, "w");
+                    guardar(&head, archivo);
+                    fclose(archivo);
+                    continue;
+                } else if (strcmp(argumentos[1], "cargar") == 0) {
+                    printf("Comando: favs cargar\n");
+                    // Aquí implementa la lógica para el comando favs crear
+                }else if (strcmp(argumentos[1], "mostrar") == 0) {
+                    printf("Comando: favs mostrar\n");
+                    printf("%d\n",cant_n);
+                    print_list(&head);
+                    continue;
+                    
+                }else if (strcmp(argumentos[1], "borrar") == 0) {
+                    printf("Comando: favs borrar\n");
+                    borrar(&head, &cant_n);
+                    continue;
+                }else if (strcmp(argumentos[1], "buscar")==0){
+                    printf("Comando: favs buscar\n");
+                    char *dato = argumentos[2];
+                    int contador = 0;
+                    node *buscar = head;
+                    while (buscar != NULL) {
+                        if(strstr(buscar->linea,dato) !=NULL){
+                        printf("%d\n", buscar->n);
+                        printf("%s\n", buscar->linea);
+                        contador++;
+                        }
+                    buscar = buscar->next;           
+                }
+                    if(contador==0)printf("No hay comandos cmd\n");   
+                    continue;
+                }else {
+                    int num;    
+                    num = atoi(argumentos[1]);
+                    if(strcmp(argumentos[2], "ejecutar")==0){
+                        node *buscar = head;
+                        int contador = 1;
+
+                        while(buscar != NULL && contador<num){
+                            buscar = buscar->next;
+                            contador++;
+                        }
+                        if(num==contador && buscar!=NULL){
+                            strcpy(entrada,buscar->linea); //Como se ejecuto un codigo de agrego+1 a cant_n;
+                            parsearComandoConPipes(entrada, comandos, &numComandos);
+                            if (numComandos > 1) {
+                                ejecutarConPipes(comandos, numComandos);
+                            }else{
+                                parsearComando(entrada, comando, argumentos);
+                                procesoconcurrente(comando, argumentos);
+                            }
+                            continue;
+                        }else {
+                            printf("No hay comando %d \n",num);
+                            continue;
+                    }
+                    }
+                }
+
+            }
+            push(&head, &cant_n, entrada);
             procesoconcurrente(comando, argumentos);
+            
         }
     }
-    
     return 0;
 }
