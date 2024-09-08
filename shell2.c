@@ -203,7 +203,25 @@ void procesoconcurrente(char *comando, char **argumentos) {
     }
 }
 
-
+void set_recordatorio(int seconds, const char *message)
+{
+    pid_t pid = fork();
+    if (pid == 0)
+    { // Proceso hijo
+        sleep(seconds);
+        printf("\a\n¡RECORDATORIO!: %s\n", message);
+    }
+    else if (pid > 0)
+    {
+        // Proceso padre no espera al hijo
+        // Así la shell sigue funcionando
+        printf("Recordatorio configurado en %d segundos: %s\n", seconds, message);
+    }
+    else
+    {
+        perror("Error al crear proceso hijo");
+    }
+}
 int main() {
     node *head = NULL;
     int cant_n=0; 
@@ -233,6 +251,17 @@ int main() {
 
         if (strcmp(entrada, "exit") == 0) {
             break;
+        }
+        if (strncmp(entrada, "set recordatorio", 16) == 0)
+        {
+            char *resto = entrada + 16;
+            int seconds;
+            char message[MAX_CHAR];
+
+            sscanf(resto, "%d \"%[^\"]\"", &seconds, message);
+
+            set_recordatorio(seconds, message);
+            continue;
         }
         if (strncmp(entrada, "favs eliminar ", 14) == 0) {
     char *buscar = entrada + 14; // Donde empiezan los números a eliminar
