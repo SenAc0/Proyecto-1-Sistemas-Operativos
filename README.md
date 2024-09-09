@@ -5,12 +5,28 @@ Es un intérprete de comandos (shell) simple escrito en C que soporta la ejecuci
 
 ## Características
 
-- **Ejecución de comandos**: Soporte para ejecutar comandos y programas con múltiples argumentos.
-- **Pipes**: Ejecución de comandos con pipes (`|`), permitiendo la comunicación entre procesos.
-- **Favoritos (`favs`)**: Gestión de comandos favoritos con opciones para crear, mostrar, eliminar, buscar, borrar, ejecutar, cargar y guardar comandos.
-- **Recordatorios (`set recordatorio`)**: Configuración de recordatorios que se activan después de un tiempo determinado.
-- **Manejo de errores**: Respuesta adecuada ante comandos no válidos.
-- **Comando `exit`**: Salida segura de la shell.
+### Ejecución de Comandos
+- **Soporte para múltiples argumentos:** Permite ejecutar comandos con uno o varios argumentos de forma sencilla, similar a una shell estándar.
+- **Manejo de errores:** La shell maneja errores de entrada de manera adecuada, proporcionando mensajes claros cuando un comando no es reconocido o no puede ser ejecutado.
+
+### Pipes
+- **Comunicación entre procesos:** Implementación del operador `|` que permite la ejecución de comandos en serie, donde la salida de un comando se convierte en la entrada del siguiente.
+
+### Gestión de Comandos Favoritos (`favs`)
+- **Crear:** Permite agregar comandos a una lista de favoritos, que se almacenan en un archivo de texto especificado por el usuario.
+- **Mostrar:** Despliega en pantalla la lista de comandos favoritos con sus respectivos números asociados.
+- **Eliminar:** Elimina comandos de la lista de favoritos utilizando sus números asociados.
+- **Buscar:** Permite buscar un comando dentro de la lista de favoritos utilizando un substring.
+- **Borrar:** Limpia completamente la lista de comandos favoritos.
+- **Ejecutar:** Ejecuta directamente un comando favorito utilizando su número asociado en la lista.
+- **Cargar:** Lee comandos desde un archivo de texto de favoritos y los carga en memoria.
+- **Guardar:** Guarda los comandos actuales en un archivo de texto para que puedan ser reutilizados en sesiones futuras.
+
+### Recordatorios (`set recordatorio`)
+- **Configuración de recordatorios:** Permite al usuario establecer recordatorios con un mensaje específico que se activan después de un tiempo determinado. Estos recordatorios se ejecutan en segundo plano, permitiendo continuar usando la shell.
+
+### Comando `exit`
+- **Salida segura:** Proporciona una manera segura de salir de la shell, asegurando que todos los procesos en ejecución se manejen correctamente.
 
 ## Compilación
 
