@@ -1,1 +1,1 @@
-/home/sebastian/Escritorio/t2.txt
+/home/sebastian/Escritorio/nombre.txt
