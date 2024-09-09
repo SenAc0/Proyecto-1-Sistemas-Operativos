@@ -7,7 +7,7 @@ Es un intérprete de comandos (shell) simple escrito en C que soporta la ejecuci
 
 - **Ejecución de comandos**: Soporte para ejecutar comandos y programas con múltiples argumentos.
 - **Pipes**: Ejecución de comandos con pipes (`|`), permitiendo la comunicación entre procesos.
-- **Favoritos (`favs`)**: Gestión de comandos favoritos con opciones para crear, guardar, cargar, mostrar, buscar y eliminar comandos.
+- **Favoritos (`favs`)**: Gestión de comandos favoritos con opciones para crear, mostrar, eliminar, buscar, borrar, ejecutar, cargar y guardar comandos.
 - **Recordatorios (`set recordatorio`)**: Configuración de recordatorios que se activan después de un tiempo determinado.
 - **Manejo de errores**: Respuesta adecuada ante comandos no válidos.
 - **Comando `exit`**: Salida segura de la shell.
