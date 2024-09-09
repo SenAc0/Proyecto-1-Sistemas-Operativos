@@ -23,7 +23,7 @@ Es un intérprete de comandos (shell) simple escrito en C que soporta la ejecuci
 - **Guardar:** Guarda los comandos actuales en un archivo de texto para que puedan ser reutilizados en sesiones futuras.
 
 ### Recordatorios (`set recordatorio`)
-- **Configuración de recordatorios:** Permite al usuario establecer recordatorios con un mensaje específico que se activan después de un tiempo determinado. Estos recordatorios se ejecutan en segundo plano, permitiendo continuar usando la shell.
+- **Configuración de recordatorios:** Permite al usuario establecer recordatorios con un mensaje específico que se activan después de los segundos determinados. Estos recordatorios se ejecutan en segundo plano, permitiendo continuar usando la shell.
 
 ### Comando `exit`
 - **Salida segura:** Proporciona una manera segura de salir de la shell, asegurando que todos los procesos en ejecución se manejen correctamente.
