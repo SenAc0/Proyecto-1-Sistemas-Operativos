@@ -1,5 +1,5 @@
 # Proyecto-1-Sistemas-Operativos
-![Shell](https://img.shields.io/badge/shell-linux-blue.svg) ![C](https://img.shields.io/badge/language-C-orange.svg)
+![C](https://img.shields.io/badge/language-C-orange.svg)
 
 Es un intérprete de comandos (shell) simple escrito en C que soporta la ejecución de comandos con pipes, procesos concurrentes, permite la gestión de comandos favoritos y también la capacidad de crear recordatorios.
 
