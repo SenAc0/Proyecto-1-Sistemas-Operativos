@@ -1,7 +1,7 @@
 # Proyecto-1-Sistemas-Operativos
 ![Shell](https://img.shields.io/badge/shell-linux-blue.svg) ![C](https://img.shields.io/badge/language-C-orange.svg)
 
-MiShell es un intérprete de comandos (shell) simple escrito en C que soporta la ejecución de comandos con pipes, procesos concurrentes y permite la gestión de comandos favoritos.
+Es un intérprete de comandos (shell) simple escrito en C que soporta la ejecución de comandos con pipes, procesos concurrentes y permite la gestión de comandos favoritos.
 
 ## Características
 
@@ -14,7 +14,7 @@ MiShell es un intérprete de comandos (shell) simple escrito en C que soporta la
 
 ## Compilación
 
-Para compilar el proyecto, ejecuta el siguiente comando en la terminal:
+Para compilar, ejecuta el siguiente comando en la terminal:
 
 ```bash
 gcc -o mishell mishell.c
