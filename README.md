@@ -10,7 +10,7 @@ Es un intérprete de comandos (shell) simple escrito en C que soporta la ejecuci
 - **Manejo de errores:** La shell maneja errores de entrada de manera adecuada, proporcionando mensajes claros cuando un comando no es reconocido o no puede ser ejecutado.
 
 ### Pipes
-- **Comunicación entre procesos:** Implementación del operador `|` que permite la ejecución de comandos en serie, donde la salida de un comando se convierte en la entrada del siguiente.
+- **Comunicación entre procesos:** Ejecución de comandos con pipes (`|`), permitiendo la comunicación entre procesos.
 
 ### Gestión de Comandos Favoritos (`favs`)
 - **Crear:** Permite agregar comandos a una lista de favoritos, que se almacenan en un archivo de texto especificado por el usuario.
