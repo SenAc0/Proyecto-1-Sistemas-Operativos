@@ -17,4 +17,16 @@ Es un intérprete de comandos (shell) simple escrito en C que soporta la ejecuci
 Para compilar, ejecuta el siguiente comando en la terminal:
 
 ```bash
-gcc -o mishell mishell.c
+gcc -o shell shell.c
+```
+
+## Ejemplos de uso
+
+```bash
+favs crear /home/usuario/favoritos.txt
+favs mostrar
+favs eliminar 1,3
+favs buscar ls
+favs 2 ejecutar
+set recordatorio 10 "ir a comprar"
+```
