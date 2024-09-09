@@ -45,4 +45,5 @@ favs eliminar 1,3
 favs buscar ls
 favs 2 ejecutar
 set recordatorio 10 "ir a comprar"
+exit
 ```
