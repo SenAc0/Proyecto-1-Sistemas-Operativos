@@ -35,6 +35,7 @@ Para compilar, ejecuta el siguiente comando en la terminal:
 ```bash
 gcc -o shell shell.c
 ```
+Se debe tener el archivo ruta.txt en el mismo directorio que el archivo shell.c.
 
 ## Ejecución
 
