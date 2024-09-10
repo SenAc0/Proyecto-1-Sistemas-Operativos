@@ -338,7 +338,7 @@ int main() {
             char *argumentos[MAX_ARGS];
             parsearComando(entrada, comando, argumentos);
             
-            if (strcmp(comando, "favs") == 0) {
+            if (strcmp(comando, "favs") == 0 && argumentos[1] != NULL) {
             if (argumentos[1] != NULL) {}
                 if (strcmp(argumentos[1], "crear") == 0) {
                     printf("Comando: favs crear\n");
@@ -393,7 +393,7 @@ int main() {
                 }
                     if(contador==0)printf("No hay comandos cmd\n");   
                     continue;
-                }else {
+                }else if(argumentos[2] != NULL){
                     int num;    
                     num = atoi(argumentos[1]);
                     if(strcmp(argumentos[2], "ejecutar")==0){
@@ -422,9 +422,11 @@ int main() {
                 }
 
             }
-            push(&head, &cant_n, entrada);
-            procesoconcurrente(comando, argumentos);
-            
+
+            if(strstr(comando,"favs")==NULL){
+                push(&head, &cant_n, entrada);
+                procesoconcurrente(comando, argumentos);
+            }
         }
     }
     return 0;
